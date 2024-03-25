@@ -9,3 +9,39 @@ spec:
     repository: https://charts.bitnami.com/bitnami
     name: metrics-server
     version: 7.0.0
+
+
+
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  annotations:
+    metadata.weave.works/description: This is the source location for metrics server chart
+  labels:
+    app.kubernetes.io/component: core
+    app.kubernetes.io/created-by: hand
+    app.kubernetes.io/name: metrics-server
+    app.kubernetes.io/part-of: core
+  name: metrics-server
+  namespace: default
+spec:
+  interval: 1h0m0s
+  type: oci
+  url: oci://registry-1.docker.io/bitnamicharts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    metadata.weave.works/description: helm chart for metrics server
+  name: metrics-server
+  namespace: default
+spec:
+  chart:
+    spec:
+      chart: metrics-server
+      sourceRef:
+        kind: HelmRepository
+        name: metrics-server
+  interval: 1h0m0s
